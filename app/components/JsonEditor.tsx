@@ -1,3 +1,5 @@
+"use client";
+
 import CodeMirror from "@uiw/react-codemirror";
 import { json as jsonLang } from "@codemirror/lang-json";
 import { EditorView, keymap } from "@codemirror/view";
@@ -36,19 +38,24 @@ export default function JsonEditor({ json, handleJsonChange }: Props) {
     <div
       style={{
         height: "90vh",
-        maxHeight: "90vh",
         width: "28%",
         display: "flex",
-        overflow: "auto",
+        flexDirection: "column",
+        overflow: "hidden", // ✅ important fix
         fontSize: "12px",
+        borderRight: "1px solid var(--border)",
+        background: "var(--bg)",
       }}
     >
       <CodeMirror
         value={json}
+        theme="dark"
         height="100%"
         width="100%"
-        theme="dark"
-        spellCheck={true}
+        basicSetup={{
+          lineNumbers: true,
+          highlightActiveLine: true,
+        }}
         extensions={[
           jsonLang(),
           EditorView.lineWrapping,
@@ -57,12 +64,16 @@ export default function JsonEditor({ json, handleJsonChange }: Props) {
           keymap.of(searchKeymap),
         ]}
         onCreateEditor={(view) => {
-          setTimeout(() => {
+          // ✅ prevent SSR/hydration timing issues
+          requestAnimationFrame(() => {
             openSearchPanel(view);
-          }, 0);
+          });
         }}
         onChange={(value) => {
           handleJsonChange(value);
+        }}
+        style={{
+          flex: 1, // ✅ ensures full height fill
         }}
       />
     </div>

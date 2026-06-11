@@ -1,6 +1,8 @@
+"use client";
+
 import Tree from "react-d3-tree";
 import { useEffect, useRef, useState } from "react";
-import Modal from "./Modal"; // ✅ import your modal
+import Modal from "./Modal";
 
 type Props = {
   data: any;
@@ -31,29 +33,44 @@ function convertToTree(data: any, name = "root"): any {
 export default function JsonGraph({ data }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [mounted, setMounted] = useState(false);
+
   const [translate, setTranslate] = useState({ x: 200, y: 200 });
+
   const [zoom, setZoom] = useState(0.8);
-  const [openModal, setOpenModal] = useState(false); // ✅ NEW
+  const [modalZoom, setModalZoom] = useState(0.8); // ✅ separate zoom
+
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
-    if (containerRef.current) {
-      const { width, height } =
-        containerRef.current.getBoundingClientRect();
+    setMounted(true);
+  }, []);
 
-      setTranslate({
-        x: width / 4,
-        y: height / 2,
-      });
-    }
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const { width, height } =
+      containerRef.current.getBoundingClientRect();
+
+    setTranslate({
+      x: width / 4,
+      y: height / 2,
+    });
   }, [data]);
 
-  if (!data) return <div>Invalid JSON</div>;
+  if (!data || !mounted) return <div>Loading...</div>;
 
   const treeData = convertToTree(data);
 
+  // 🔥 open modal with reset zoom
+  const openFullscreen = () => {
+    setModalZoom(0.8);
+    setOpenModal(true);
+  };
+
   return (
     <>
-      {/* 🔹 Inline Graph (UNCHANGED) */}
+      {/* 🔹 INLINE GRAPH */}
       <div
         ref={containerRef}
         style={{
@@ -65,7 +82,7 @@ export default function JsonGraph({ data }: Props) {
           overflow: "hidden",
         }}
       >
-        {/* 🔥 Controls */}
+        {/* Controls */}
         <div
           style={{
             position: "absolute",
@@ -76,16 +93,13 @@ export default function JsonGraph({ data }: Props) {
             gap: "6px",
           }}
         >
-          {/* Zoom */}
           <button className="graph-btn" onClick={() => setZoom((z) => z + 0.2)}>+</button>
           <button className="graph-btn" onClick={() => setZoom((z) => Math.max(0.3, z - 0.2))}>-</button>
           <button className="graph-btn" onClick={() => setZoom(0.8)}>Reset</button>
 
-          {/* 🔥 Fullscreen → Modal */}
           <button
             className="graph-btn"
-            onClick={() => setOpenModal(true)}
-            title="Open Fullscreen"
+            onClick={openFullscreen}
           >
             ⛶
           </button>
@@ -95,23 +109,19 @@ export default function JsonGraph({ data }: Props) {
           data={treeData}
           orientation="horizontal"
           pathFunc="elbow"
-
           translate={translate}
           zoom={zoom}
-
           zoomable
           draggable
           scaleExtent={{ min: 0.3, max: 2 }}
-
           nodeSize={{ x: 220, y: 100 }}
-
           rootNodeClassName="node__root"
           branchNodeClassName="node__branch"
           leafNodeClassName="node__leaf"
         />
       </div>
 
-      {/* 🔥 Modal Graph */}
+      {/* 🔥 MODAL */}
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
         <div
           style={{
@@ -121,7 +131,7 @@ export default function JsonGraph({ data }: Props) {
             background: "var(--bg)",
           }}
         >
-          {/* Controls inside modal */}
+          {/* Controls */}
           <div
             style={{
               position: "absolute",
@@ -132,25 +142,21 @@ export default function JsonGraph({ data }: Props) {
               gap: "6px",
             }}
           >
-            <button className="graph-btn" onClick={() => setZoom((z) => z + 0.2)}>+</button>
-            <button className="graph-btn" onClick={() => setZoom((z) => Math.max(0.3, z - 0.2))}>-</button>
-            <button className="graph-btn" onClick={() => setZoom(0.8)}>Reset</button>
+            <button className="graph-btn" onClick={() => setModalZoom((z) => z + 0.2)}>+</button>
+            <button className="graph-btn" onClick={() => setModalZoom((z) => Math.max(0.3, z - 0.2))}>-</button>
+            <button className="graph-btn" onClick={() => setModalZoom(0.8)}>Reset</button>
           </div>
 
           <Tree
             data={treeData}
             orientation="horizontal"
             pathFunc="elbow"
-
-            translate={{ x: 300, y: 400 }} // ✅ better centering for big screen
-            zoom={zoom}
-
+            translate={{ x: 400, y: 400 }}
+            zoom={modalZoom}
             zoomable
             draggable
             scaleExtent={{ min: 0.3, max: 2 }}
-
-            nodeSize={{ x: 240, y: 110 }} // slightly bigger spacing
-
+            nodeSize={{ x: 240, y: 110 }}
             rootNodeClassName="node__root"
             branchNodeClassName="node__branch"
             leafNodeClassName="node__leaf"
