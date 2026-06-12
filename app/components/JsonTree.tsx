@@ -213,16 +213,14 @@ export default function JsonTree({ data }: Props) {
   return (
     <div
       style={{
-        height: "90vh",
-        width: "28%",
         display: "flex",
         flexDirection: "column",
         background: "var(--bg)",
         borderRight: "0.1rem solid var(--border)",
-
         borderLeft: "0.1rem solid var(--border)",
         fontFamily: "var(--mono)",
       }}
+      className="json-tree-container"
     >
       {/* SEARCH BAR */}
       <div

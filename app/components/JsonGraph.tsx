@@ -86,13 +86,12 @@ export default function JsonGraph({ data }: Props) {
       <div
         ref={containerRef}
         style={{
-          width: "50%",
-          height: "90vh",
           background: "var(--bg)",
           position: "relative",
           borderLeft: "0.1rem solid var(--border)",
           overflow: "hidden",
         }}
+        className="json-graph-container"
       >
         {/* Controls */}
         <div

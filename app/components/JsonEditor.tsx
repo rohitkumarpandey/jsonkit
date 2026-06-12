@@ -69,8 +69,6 @@ export default function JsonEditor({ json, handleJsonChange }: Props) {
   return (
     <div
       style={{
-        height: "90vh",
-        width: "28%",
         display: "flex",
         flexDirection: "column",
         fontSize: "1.2rem",
@@ -79,6 +77,7 @@ export default function JsonEditor({ json, handleJsonChange }: Props) {
         position: "relative",
         overflow: "hidden", 
       }}
+      className="json-editor-container"
     >
       {/* TOOLBAR */}
       <div
