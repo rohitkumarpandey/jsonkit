@@ -38,6 +38,30 @@ export const dummyJson = {
         "fiber": "2.4g",
         "vitaminC": "53.2mg"
       }
+    },{
+      "name": "Orange",
+      "color": "#FFA500",
+      "details": {
+        "type": "Citrus",
+        "season": "Winter"
+      },
+      "nutrients": {
+        "calories": 47,
+        "fiber": "2.4g",
+        "vitaminC": "53.2mg"
+      }
+    },{
+      "name": "Orange",
+      "color": "#FFA500",
+      "details": {
+        "type": "Citrus",
+        "season": "Winter"
+      },
+      "nutrients": {
+        "calories": 47,
+        "fiber": "2.4g",
+        "vitaminC": "53.2mg"
+      }
     }
   ]
 }
