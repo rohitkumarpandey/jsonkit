@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Darker_Grotesque } from "next/font/google";
 import "./globals.css";
+
+import { Analytics } from "@vercel/analytics/next"
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
@@ -38,6 +40,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${darkerGrotesque.variable} h-full`}
     >
       <body className="min-h-full flex flex-col font-sans">
+        <Analytics />
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />
